@@ -2,9 +2,9 @@ package services
 
 import (
 	"fmt"
-	"org/gg/banking/middleware/errors"
-	"org/gg/banking/models"
-	"org/gg/banking/repository"
+	"org/gg/banking/internal/middleware/errors"
+	"org/gg/banking/internal/models"
+	"org/gg/banking/internal/repository"
 )
 
 type ICustomerService interface {

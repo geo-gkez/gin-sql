@@ -2,10 +2,9 @@ package controllers
 
 import (
 	"fmt"
-	"net/http"
-	"org/gg/banking/services"
-
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"org/gg/banking/internal/services"
 )
 
 // ICustomerController defines the interface for customer-related HTTP handlers

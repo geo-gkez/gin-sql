@@ -13,11 +13,11 @@ services:
       POSTGRES_DB: banking_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./sql-scripts:/docker-entrypoint-initdb.d
+      - ./scripts/sql-scripts:/docker-entrypoint-initdb.d
     networks:
       - banking-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U banking_user -d banking_db"]
+      test: [ "CMD-SHELL", "pg_isready -U banking_user -d banking_db" ]
       interval: 10s
       timeout: 5s
       retries: 5

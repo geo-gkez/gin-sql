@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"org/gg/banking/models"
+	"org/gg/banking/internal/models"
 )
 
 type ICustomerRepository interface {

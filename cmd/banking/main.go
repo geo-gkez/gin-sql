@@ -1,7 +1,7 @@
 package main
 
 import (
-	"org/gg/banking/config"
+	"org/gg/banking/internal/config"
 )
 
 func main() {

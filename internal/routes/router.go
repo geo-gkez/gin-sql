@@ -2,8 +2,8 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"org/gg/banking/controllers"
-	"org/gg/banking/middleware/errors"
+	"org/gg/banking/internal/controllers"
+	"org/gg/banking/internal/middleware/errors"
 )
 
 // SetupRouter initializes the Gin router and applies middleware

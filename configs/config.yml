@@ -1,0 +1,10 @@
+database:
+  host: localhost
+  port: 5432
+  user: banking_user
+  password: secure_password
+  dbname: banking_db
+
+server:
+  port: 8080
+  mode: debug
