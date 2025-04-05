@@ -41,7 +41,7 @@ The application follows a layered architecture:
 #### Running the Application
 
 ```bash
-go run main.go
+go run cmd/banking/main.go 
 ```
 
 The server runs on http://localhost:8080
