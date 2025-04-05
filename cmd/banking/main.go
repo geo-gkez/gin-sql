@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"org/gg/banking/internal/config"
 )
 
 func main() {
 	router, serverConfig := config.SetupApp()
 
-	//TODO user serverConfig.Mode to set the mode
+	gin.SetMode(serverConfig.Mode)
 	err := router.Run(fmt.Sprintf(":%d", serverConfig.Port))
 	if err != nil {
 		return
