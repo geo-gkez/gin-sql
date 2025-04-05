@@ -1,13 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"org/gg/banking/internal/config"
 )
 
 func main() {
-	router := config.SetupApp()
+	router, serverConfig := config.SetupApp()
 
-	err := router.Run(":8080")
+	err := router.Run(fmt.Sprintf(":%d", serverConfig.Port))
 	if err != nil {
 		return
 	}
