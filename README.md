@@ -3,15 +3,26 @@ A simple banking API built with Go and the Gin framework.
 
 #### Project Structure
 ```
-org/gg/banking/
-├── config/         # Application configuration
-├── controllers/    # HTTP request handlers
-├── middleware/     # HTTP middleware (error handling)
-├── models/         # Domain models
-├── repository/     # Data access layer
-├── routes/         # Route definitions
-├── services/       # Business logic layer
-└── main.go         # Application entry point
+├── cmd/
+│   └── banking/                # Main application entry point
+│       └── main.go
+├── internal/                   # Private application code
+│   ├── config/                 # Configuration logic
+│   ├── controllers/            # HTTP handlers
+│   ├── middleware/             # HTTP middleware
+│   ├── models/                 # Data models
+│   ├── repository/             # Data access layer
+│   ├── services/               # Business logic
+│   └── routes/                 # API route definitions
+├── pkg/                        # Public reusable libraries
+├── configs/                    # Configuration files
+│   └── config.yml              # YAML configuration
+├── api/                        # API definitions
+│   └── http_requests/          # HTTP request examples
+├── deployments/                # Deployment configurations
+│   └── docker-compose.yml
+└── scripts/                    # Utility scripts
+    └── sql-scripts/            # SQL initialization scripts
 ```
 
 #### Architecture
