@@ -11,7 +11,7 @@ import (
 	"os"
 )
 
-func SetupApp() (*gin.Engine, ServerConfiguration) {
+func SetupApp() {
 	config, err := LoadConfig()
 	if err != nil {
 		panic(fmt.Sprintf("failed to load config: %v", err))
@@ -25,7 +25,12 @@ func SetupApp() (*gin.Engine, ServerConfiguration) {
 	router := routes.SetupRouter()
 	routes.RegisterRoutes(router, controller)
 
-	return router, config.Server
+	gin.SetMode(config.Server.Mode)
+	errRouter := router.Run(fmt.Sprintf(":%d", config.Server.Port))
+
+	if errRouter != nil {
+		panic(fmt.Sprintf("failed to start server: %v", err))
+	}
 }
 
 type AppConfiguration struct {
