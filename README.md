@@ -166,12 +166,15 @@ The application uses a centralized error handling approach:
 - **Repository Layer**: Returns standard Go errors
 - **Service Layer**: Transforms them into domain-specific errors
 - **Controller Layer**: Delegates to middleware
-- **Error Middleware**: Formats consistent HTTP responses
+  - **Error Middleware**: Formats consistent HTTP responses
 
-#### Resources
+    #### Next Steps:
 
 - **Dependency Injection in Go**
     - [Google Wire - Compile-time DI](https://github.com/google/wire)
     - [Uber Dig - Runtime DI](https://github.com/uber-go/dig)
     - [Article: Dependency Injection in Go](https://medium.com/@john.doe/dependency-injection-in-go-1a6a1f4eabe)
     - [Go Dependency Injection with Wire](https://medium.com/@john.doe/go-dependency-injection-with-wire-1a6a1f4eabe)
+
+- **Use ORM library**
+  - [GORM](https://gorm.io/) 
