@@ -38,9 +38,11 @@ The application follows a layered architecture:
 
 #### API Endpoints
 
-| Method | Endpoint   | Description            |
-|--------|------------|------------------------|
-| GET    | /customers | Retrieve all customers |
+| Method | Endpoint                   | Description                        |
+|--------|----------------------------|------------------------------------|
+| GET    | /api/v1/customers          | Retrieve all customers             |
+| GET    | /api/v1/customers/:email   | Retrieve customer by email with accounts |
+| POST   | /api/v1/customers          | Create a new customer              |
 
 #### Configuration with Viper
 
@@ -145,8 +147,14 @@ return &config, nil
 
 #### Running the Application
 
+#### Docker Compose is provided for easy database setup:
 ```bash
-go run cmd/banking/main.go 
+    docker-compose -f deployments/docker-compose.yml up -d
+```
+
+
+```bash
+   go run cmd/banking/main.go 
 ```
 
 The server runs on http://localhost:8080
@@ -159,21 +167,6 @@ The application uses a centralized error handling approach:
 - **Service Layer**: Transforms them into domain-specific errors
 - **Controller Layer**: Delegates to middleware
 - **Error Middleware**: Formats consistent HTTP responses
-
-#### TODO
-
-**Database Integration**
-
-- [ ] Add database configuration
-- [ ] Implement database connection pooling
-- [ ] Update repositories to use the database
-- [ ] Add migrations system
-
-**Dependency Injection Improvements**
-
-- [ ] Consider using a DI framework like Wire or Dig
-- [ ] Support different environments (dev, test, prod)
-- [ ] Add configuration through environment variables
 
 #### Resources
 
