@@ -178,3 +178,6 @@ The application uses a centralized error handling approach:
 
 - **Use ORM library**
   - [GORM](https://gorm.io/) 
+
+- **Graceful shutdown**
+  - Find a way to gracefully shutdown the server
