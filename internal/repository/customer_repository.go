@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"database/sql"
 	"org/gg/banking/internal/models"
 )
 
@@ -9,13 +10,16 @@ type ICustomerRepository interface {
 }
 
 type CustomerRepository struct {
+	db         *sql.DB
 	collection string
 }
 
-func NewCustomerRepository() *CustomerRepository {
-	return &CustomerRepository{"customer_collection"}
+func NewCustomerRepository(db *sql.DB) *CustomerRepository {
+	return &CustomerRepository{
+		db:         db,
+		collection: "customer_collection",
+	}
 }
-
 func (c *CustomerRepository) GetCustomers() ([]models.Customer, error) {
 	customers := []models.Customer{
 		{

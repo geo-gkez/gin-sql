@@ -1,9 +1,12 @@
 package config
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
+	"log"
 	"org/gg/banking/internal/controllers"
 	"org/gg/banking/internal/repository"
 	"org/gg/banking/internal/routes"
@@ -16,8 +19,20 @@ func SetupApp() {
 	if err != nil {
 		panic(fmt.Sprintf("failed to load config: %v", err))
 	}
+
+	db := connectToPostgres(config)
+	// Ensure DB is closed when application terminates
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Println("Error closing database connection:", err)
+		} else {
+			log.Println("Database connection closed")
+		}
+	}(db)
+
 	// Create components
-	repo := repository.NewCustomerRepository()
+	repo := repository.NewCustomerRepository(db)
 	service := services.NewCustomerService(repo)
 	controller := controllers.NewCustomerController(service)
 
@@ -31,6 +46,29 @@ func SetupApp() {
 	if errRouter != nil {
 		panic(fmt.Sprintf("failed to start server: %v", err))
 	}
+}
+
+func connectToPostgres(config *AppConfiguration) *sql.DB {
+	// Setup database connection
+	dbConfig := config.Database
+	// Create connection string from config
+	driverName := "postgres"
+	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		dbConfig.Host, dbConfig.Port, dbConfig.User, dbConfig.Password, dbConfig.DBName)
+
+	// Open database connection
+	db, err := sql.Open(driverName, connectionString)
+	if err != nil {
+		panic(fmt.Sprintf("failed to connect to database: %v", err))
+	}
+
+	// Ping the database to verify connection
+	if err := db.Ping(); err != nil {
+		log.Fatal("Failed to ping database:", err)
+	}
+
+	log.Println("Connected to database successfully")
+	return db
 }
 
 type AppConfiguration struct {
