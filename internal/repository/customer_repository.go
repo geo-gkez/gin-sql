@@ -11,6 +11,7 @@ import (
 type ICustomerRepository interface {
 	FindAll() ([]models.Customer, error)
 	FindByEmail(email string) (models.Customer, error)
+	Create(customer models.Customer) (models.Customer, error)
 }
 
 type customerRepository struct {
@@ -74,4 +75,29 @@ func (repo *customerRepository) FindByEmail(email string) (models.Customer, erro
 	}
 
 	return customer, nil
+}
+
+// Create inserts a new customer into the database
+// Create inserts a new customer into the database and returns the created customer
+func (repo *customerRepository) Create(customer models.Customer) (models.Customer, error) {
+	query := `
+		INSERT INTO customers (first_name, last_name, email, phone)
+		VALUES ($1, $2, $3, $4)
+		RETURNING id, first_name, last_name, email, phone
+	`
+
+	var createdCustomer models.Customer
+	err := repo.db.QueryRow(query, customer.FirstName, customer.LastName, customer.Email, customer.Phone).Scan(
+		&createdCustomer.ID,
+		&createdCustomer.FirstName,
+		&createdCustomer.LastName,
+		&createdCustomer.Email,
+		&createdCustomer.Phone,
+	)
+
+	if err != nil {
+		return models.Customer{}, fmt.Errorf("error inserting new customer: %v", err)
+	}
+
+	return createdCustomer, nil
 }

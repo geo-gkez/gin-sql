@@ -10,6 +10,7 @@ import (
 type ICustomerService interface {
 	FindAll() ([]models.CustomerResponse, error)
 	FindCustomerWithAccounts(email string) (models.CustomerWithAccounts, error)
+	CreateCustomer(customer models.Customer) (models.CustomerResponse, error)
 }
 
 type customerService struct {
@@ -65,4 +66,17 @@ func (s *customerService) FindCustomerWithAccounts(email string) (models.Custome
 	}
 
 	return customer.ToResponseWithAccounts(accountResponses), nil
+}
+
+// CreateCustomer creates a new customer and their accounts
+func (s *customerService) CreateCustomer(customer models.Customer) (models.CustomerResponse, error) {
+	createdCustomer, err := s.customerRepository.Create(customer)
+	if err != nil {
+		return models.CustomerResponse{}, errors.InternalServerError(fmt.Sprintf("Failed to create customer: %v", err))
+	}
+
+	// Assuming accounts are created in a separate process
+	// You can add logic here to create accounts if needed
+
+	return createdCustomer.ToResponse(), nil
 }

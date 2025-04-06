@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"org/gg/banking/internal/models"
 	"org/gg/banking/internal/services"
 )
 
@@ -11,7 +12,7 @@ import (
 type ICustomerController interface {
 	GetCustomers(ctx *gin.Context)
 	GetCustomerByEmail(ctx *gin.Context)
-	//CreateCustomer(ctx *gin.Context)
+	CreateCustomer(ctx *gin.Context)
 }
 
 type customerController struct {
@@ -49,4 +50,21 @@ func (c *customerController) GetCustomerByEmail(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, customer)
+}
+
+// CreateCustomer handles the HTTP request to create a new customer
+func (c *customerController) CreateCustomer(ctx *gin.Context) {
+	var customer models.Customer
+	if err := ctx.ShouldBindJSON(&customer); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		return
+	}
+
+	createdCustomer, err := c.customerService.CreateCustomer(customer)
+	if err != nil {
+		ctx.Error(fmt.Errorf("creating customer: %w", err))
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, createdCustomer)
 }
