@@ -17,7 +17,15 @@ func SetupRouter() *gin.Engine {
 
 // RegisterRoutes adds all application routes to the router
 func RegisterRoutes(router *gin.Engine, customerController controllers.ICustomerController) {
+	// API v1 group
+	v1 := router.Group("/api/v1")
+
 	// Customer routes
-	router.GET("/customers", customerController.GetCustomers)
-	router.GET("/customers/:email", customerController.GetCustomerByEmail)
+	customerGroup := v1.Group("/customers")
+	{
+		customerGroup.GET("/", customerController.GetCustomers)
+		customerGroup.GET("/:email", customerController.GetCustomerByEmail)
+		//customerGroup.POST("")
+	}
+
 }
