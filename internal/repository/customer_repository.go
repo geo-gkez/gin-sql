@@ -77,7 +77,6 @@ func (repo *customerRepository) FindByEmail(email string) (models.Customer, erro
 	return customer, nil
 }
 
-// Create inserts a new customer into the database
 // Create inserts a new customer into the database and returns the created customer
 func (repo *customerRepository) Create(customer models.Customer) (models.Customer, error) {
 	query := `
