@@ -52,12 +52,12 @@ func (s *customerService) FindAll() ([]models.CustomerResponse, error) {
 func (s *customerService) FindCustomerWithAccounts(email string) (models.CustomerWithAccounts, error) {
 	customer, err := s.customerRepository.FindByEmail(email)
 	if err != nil {
-		return models.CustomerWithAccounts{}, err
+		return models.CustomerWithAccounts{}, errors.NotFoundError(fmt.Sprintf("Customer with email %s not found: %v", email, err))
 	}
 
 	accounts, err := s.accountRepository.FindByCustomerID(customer.ID)
 	if err != nil {
-		return models.CustomerWithAccounts{}, err
+		return models.CustomerWithAccounts{}, errors.InternalServerError(fmt.Sprintf("Failed to retrieve accounts for customer with email %s: %v", email, err))
 	}
 
 	var accountResponses []models.AccountResponse

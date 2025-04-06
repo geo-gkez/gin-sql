@@ -21,5 +21,5 @@ Content-Type: application/json
   "phone": "69999987"
 }
 
-### Get customer by email - sg
-GET http://localhost:8080/api/v1/customers/sg@gmail.com
+### Get customer by email - so(not exitsting)
+GET http://localhost:8080/api/v1/customers/so@gmail.com
