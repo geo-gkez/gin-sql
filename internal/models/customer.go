@@ -34,6 +34,16 @@ func (c Customer) ToCustomerDTO() CustomerDTO {
 	}
 }
 
+// ToCustomer converts the CustomerDTO DTO to Customer model
+func (c CustomerDTO) ToCustomer() Customer {
+	return Customer{
+		FirstName: c.FirstName,
+		LastName:  c.LastName,
+		Email:     c.Email,
+		Phone:     c.Phone,
+	}
+}
+
 // ToCustomerAggregateDTO converts the Customer model to CustomerAggregateDTO DTO
 func (c Customer) ToCustomerAggregateDTO(accounts []AccountDTO) CustomerAggregateDTO {
 	return CustomerAggregateDTO{

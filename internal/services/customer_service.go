@@ -10,7 +10,7 @@ import (
 type ICustomerService interface {
 	FindAll() ([]models.CustomerDTO, error)
 	FindCustomerWithAccounts(email string) (models.CustomerAggregateDTO, error)
-	CreateCustomer(customer models.Customer) (models.CustomerDTO, error)
+	CreateCustomer(customer models.CustomerDTO) (models.CustomerDTO, error)
 }
 
 type customerService struct {
@@ -69,8 +69,8 @@ func (s *customerService) FindCustomerWithAccounts(email string) (models.Custome
 }
 
 // CreateCustomer creates a new customer and their accounts
-func (s *customerService) CreateCustomer(customer models.Customer) (models.CustomerDTO, error) {
-	createdCustomer, err := s.customerRepository.Create(customer)
+func (s *customerService) CreateCustomer(customer models.CustomerDTO) (models.CustomerDTO, error) {
+	createdCustomer, err := s.customerRepository.Create(customer.ToCustomer())
 	if err != nil {
 		return models.CustomerDTO{}, errors.InternalServerError(fmt.Sprintf("Failed to create customer: %v", err))
 	}

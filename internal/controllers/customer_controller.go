@@ -60,7 +60,7 @@ func (c *customerController) CreateCustomer(ctx *gin.Context) {
 		return
 	}
 
-	createdCustomer, err := c.customerService.CreateCustomer(customer)
+	createdCustomer, err := c.customerService.CreateCustomer(customer.ToCustomerDTO())
 	if err != nil {
 		ctx.Error(fmt.Errorf("creating customer: %w", err))
 		return

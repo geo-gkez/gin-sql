@@ -41,3 +41,14 @@ func (a Account) ToAccountDTO() AccountDTO {
 		DeletedAt:          deletedAt,
 	}
 }
+
+// ToAccount Convert from response model to DB model
+func (a AccountDTO) ToAccount() Account {
+	return Account{
+		AccountNumber:      a.AccountNumber,
+		Balance:            a.Balance,
+		AccountDescription: a.AccountDescription,
+		CreatedAt:          a.CreatedAt,
+		UpdatedAt:          a.UpdatedAt,
+	}
+}
