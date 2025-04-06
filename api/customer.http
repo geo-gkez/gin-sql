@@ -1,2 +1,11 @@
 ### Get all customers
 GET http://localhost:8080/customers
+
+### Get customer by email - John Doe
+GET http://localhost:8080/customers/john.doe@example.com
+
+### Get customer by email - Jane Smith
+GET http://localhost:8080/customers/jane.smith@example.com
+
+### Get customer by email - GG
+GET http://localhost:8080/customers/gg@gmail.com

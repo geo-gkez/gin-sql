@@ -9,22 +9,25 @@ import (
 
 type ICustomerService interface {
 	FindAll() ([]models.Customer, error)
+	FindCustomerWithAccounts(email string) (models.CustomerWithAccounts, error)
 }
 
 type customerService struct {
-	repo repository.ICustomerRepository
+	customerRepository repository.ICustomerRepository
+	accountRepository  repository.IAccountRepository
 }
 
 // NewCustomerService creates a new service with the provided repository
-func NewCustomerService(repo repository.ICustomerRepository) ICustomerService {
+func NewCustomerService(customerRepository repository.ICustomerRepository, accountRepository repository.IAccountRepository) ICustomerService {
 	return &customerService{
-		repo: repo,
+		customerRepository: customerRepository,
+		accountRepository:  accountRepository,
 	}
 }
 
 // FindAll GetCustomers delegates to the repository layer
 func (s *customerService) FindAll() ([]models.Customer, error) {
-	customers, err := s.repo.FindAll()
+	customers, err := s.customerRepository.FindAll()
 	if err != nil {
 		// Transform technical errors to domain errors
 		return nil, errors.InternalServerError(fmt.Sprintf("Failed to retrieve customers: %v", err))
@@ -36,4 +39,24 @@ func (s *customerService) FindAll() ([]models.Customer, error) {
 	}
 
 	return customers, nil
+}
+
+// FindCustomerWithAccounts GetCustomerWithAccounts retrieves a customer with all their accounts
+func (s *customerService) FindCustomerWithAccounts(email string) (models.CustomerWithAccounts, error) {
+	customer, err := s.customerRepository.FindByEmail(email)
+	if err != nil {
+		return models.CustomerWithAccounts{}, err
+	}
+
+	accounts, err := s.accountRepository.FindByCustomerID(customer.ID)
+	if err != nil {
+		return models.CustomerWithAccounts{}, err
+	}
+
+	var accountResponses []models.AccountResponse
+	for _, account := range accounts {
+		accountResponses = append(accountResponses, account.ToResponse())
+	}
+
+	return customer.ToResponseWithAccounts(accountResponses), nil
 }

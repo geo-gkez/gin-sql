@@ -32,13 +32,14 @@ func SetupApp() {
 	}(db)
 
 	// Create components
-	repo := repository.NewCustomerRepository(db)
-	service := services.NewCustomerService(repo)
-	controller := controllers.NewCustomerController(service)
+	customerRepository := repository.NewCustomerRepository(db)
+	accountRepository := repository.NewAccountRepository(db)
+	customerService := services.NewCustomerService(customerRepository, accountRepository)
+	customerController := controllers.NewCustomerController(customerService)
 
 	// Setup router and routes
 	router := routes.SetupRouter()
-	routes.RegisterRoutes(router, controller)
+	routes.RegisterRoutes(router, customerController)
 
 	gin.SetMode(config.Server.Mode)
 	errRouter := router.Run(fmt.Sprintf(":%d", config.Server.Port))

@@ -19,6 +19,5 @@ func SetupRouter() *gin.Engine {
 func RegisterRoutes(router *gin.Engine, customerController controllers.ICustomerController) {
 	// Customer routes
 	router.GET("/customers", customerController.GetCustomers)
-	//router.POST("/customers", customerController.CreateCustomer)
-	//router.GET("/customers/:id", customerController.GetCustomerByID)
+	router.GET("/customers/:email", customerController.GetCustomerByEmail)
 }
