@@ -21,7 +21,7 @@ type CustomerWithAccounts struct {
 	LastName  string            `json:"last_name"`
 	Email     string            `json:"email"`
 	Phone     string            `json:"phone"`
-	Accounts  []AccountResponse `json:"accounts"`
+	Accounts  []AccountResponse `json:"accounts,omitempty"`
 }
 
 // ToResponse converts the Customer model to CustomerResponse DTO

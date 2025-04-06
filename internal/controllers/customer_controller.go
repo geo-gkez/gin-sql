@@ -11,21 +11,22 @@ import (
 type ICustomerController interface {
 	GetCustomers(ctx *gin.Context)
 	GetCustomerByEmail(ctx *gin.Context)
+	//CreateCustomer(ctx *gin.Context)
 }
 
 type customerController struct {
-	service services.ICustomerService
+	customerService services.ICustomerService
 }
 
 func NewCustomerController(service services.ICustomerService) ICustomerController {
 	return &customerController{
-		service: service,
+		customerService: service,
 	}
 }
 
 // GetCustomers handles the HTTP request to fetch all customers
 func (c *customerController) GetCustomers(ctx *gin.Context) {
-	customers, err := c.service.FindAll()
+	customers, err := c.customerService.FindAll()
 	if err != nil {
 		ctx.Error(fmt.Errorf("getting customer list: %w", err))
 		return
@@ -41,7 +42,7 @@ func (c *customerController) GetCustomerByEmail(ctx *gin.Context) {
 		return
 	}
 
-	customer, err := c.service.FindCustomerWithAccounts(email)
+	customer, err := c.customerService.FindCustomerWithAccounts(email)
 	if err != nil {
 		ctx.Error(fmt.Errorf("getting customer by email: %w", err))
 		return

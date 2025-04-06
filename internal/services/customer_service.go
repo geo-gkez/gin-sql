@@ -8,7 +8,7 @@ import (
 )
 
 type ICustomerService interface {
-	FindAll() ([]models.Customer, error)
+	FindAll() ([]models.CustomerResponse, error)
 	FindCustomerWithAccounts(email string) (models.CustomerWithAccounts, error)
 }
 
@@ -26,7 +26,7 @@ func NewCustomerService(customerRepository repository.ICustomerRepository, accou
 }
 
 // FindAll GetCustomers delegates to the repository layer
-func (s *customerService) FindAll() ([]models.Customer, error) {
+func (s *customerService) FindAll() ([]models.CustomerResponse, error) {
 	customers, err := s.customerRepository.FindAll()
 	if err != nil {
 		// Transform technical errors to domain errors
@@ -38,7 +38,13 @@ func (s *customerService) FindAll() ([]models.Customer, error) {
 		return nil, errors.NotFoundError("No customers found")
 	}
 
-	return customers, nil
+	// Convert Customer models to CustomerResponse models
+	var customerResponses []models.CustomerResponse
+	for _, customer := range customers {
+		customerResponses = append(customerResponses, customer.ToResponse())
+	}
+
+	return customerResponses, nil
 }
 
 // FindCustomerWithAccounts GetCustomerWithAccounts retrieves a customer with all their accounts
