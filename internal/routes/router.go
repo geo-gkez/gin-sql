@@ -16,7 +16,7 @@ func SetupRouter() *gin.Engine {
 }
 
 // RegisterRoutes adds all application routes to the router
-func RegisterRoutes(router *gin.Engine, customerController *controllers.CustomerController) {
+func RegisterRoutes(router *gin.Engine, customerController controllers.ICustomerController) {
 	// Customer routes
 	router.GET("/customers", customerController.GetCustomers)
 	//router.POST("/customers", customerController.CreateCustomer)

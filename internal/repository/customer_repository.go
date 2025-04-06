@@ -6,21 +6,21 @@ import (
 )
 
 type ICustomerRepository interface {
-	GetCustomers() ([]models.Customer, error)
+	FindAll() ([]models.Customer, error)
 }
 
-type CustomerRepository struct {
+type customerRepository struct {
 	db         *sql.DB
 	collection string
 }
 
-func NewCustomerRepository(db *sql.DB) *CustomerRepository {
-	return &CustomerRepository{
+func NewCustomerRepository(db *sql.DB) ICustomerRepository {
+	return &customerRepository{
 		db:         db,
 		collection: "customer_collection",
 	}
 }
-func (c *CustomerRepository) GetCustomers() ([]models.Customer, error) {
+func (c *customerRepository) FindAll() ([]models.Customer, error) {
 	customers := []models.Customer{
 		{
 			ID:        1,

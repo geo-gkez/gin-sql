@@ -8,23 +8,23 @@ import (
 )
 
 type ICustomerService interface {
-	GetCustomers() ([]models.Customer, error)
+	FindAll() ([]models.Customer, error)
 }
 
-type CustomerService struct {
+type customerService struct {
 	repo repository.ICustomerRepository
 }
 
 // NewCustomerService creates a new service with the provided repository
 func NewCustomerService(repo repository.ICustomerRepository) ICustomerService {
-	return &CustomerService{
+	return &customerService{
 		repo: repo,
 	}
 }
 
-// GetCustomers delegates to the repository layer
-func (s *CustomerService) GetCustomers() ([]models.Customer, error) {
-	customers, err := s.repo.GetCustomers()
+// FindAll GetCustomers delegates to the repository layer
+func (s *customerService) FindAll() ([]models.Customer, error) {
+	customers, err := s.repo.FindAll()
 	if err != nil {
 		// Transform technical errors to domain errors
 		return nil, errors.InternalServerError(fmt.Sprintf("Failed to retrieve customers: %v", err))
