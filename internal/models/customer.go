@@ -8,25 +8,25 @@ type Customer struct {
 	Phone     string `json:"phone"`
 }
 
-type CustomerResponse struct {
+type CustomerDTO struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Email     string `json:"email"`
 	Phone     string `json:"phone"`
 }
 
-// CustomerWithAccounts represents a customer with their accounts
-type CustomerWithAccounts struct {
-	FirstName string            `json:"first_name"`
-	LastName  string            `json:"last_name"`
-	Email     string            `json:"email"`
-	Phone     string            `json:"phone"`
-	Accounts  []AccountResponse `json:"accounts,omitempty"`
+// CustomerAggregateDTO represents a customer with their accounts
+type CustomerAggregateDTO struct {
+	FirstName string       `json:"first_name"`
+	LastName  string       `json:"last_name"`
+	Email     string       `json:"email"`
+	Phone     string       `json:"phone"`
+	Accounts  []AccountDTO `json:"accounts,omitempty"`
 }
 
-// ToResponse converts the Customer model to CustomerResponse DTO
-func (c Customer) ToResponse() CustomerResponse {
-	return CustomerResponse{
+// ToCustomerDTO converts the Customer model to CustomerDTO DTO
+func (c Customer) ToCustomerDTO() CustomerDTO {
+	return CustomerDTO{
 		FirstName: c.FirstName,
 		LastName:  c.LastName,
 		Email:     c.Email,
@@ -34,9 +34,9 @@ func (c Customer) ToResponse() CustomerResponse {
 	}
 }
 
-// ToResponseWithAccounts converts the Customer model to CustomerWithAccounts DTO
-func (c Customer) ToResponseWithAccounts(accounts []AccountResponse) CustomerWithAccounts {
-	return CustomerWithAccounts{
+// ToCustomerAggregateDTO converts the Customer model to CustomerAggregateDTO DTO
+func (c Customer) ToCustomerAggregateDTO(accounts []AccountDTO) CustomerAggregateDTO {
+	return CustomerAggregateDTO{
 		FirstName: c.FirstName,
 		LastName:  c.LastName,
 		Email:     c.Email,

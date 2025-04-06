@@ -16,7 +16,7 @@ type Account struct {
 	DeletedAt          sql.NullTime `json:"deleted_at"`
 }
 
-type AccountResponse struct {
+type AccountDTO struct {
 	AccountNumber      string     `json:"account_number"`
 	Balance            float64    `json:"balance"`
 	AccountDescription string     `json:"account_description"`
@@ -25,14 +25,14 @@ type AccountResponse struct {
 	DeletedAt          *time.Time `json:"deleted_at,omitempty"`
 }
 
-// ToResponse Convert from DB model to response model
-func (a Account) ToResponse() AccountResponse {
+// ToAccountDTO Convert from DB model to response model
+func (a Account) ToAccountDTO() AccountDTO {
 	var deletedAt *time.Time
 	if a.DeletedAt.Valid {
 		deletedAt = &a.DeletedAt.Time
 	}
 
-	return AccountResponse{
+	return AccountDTO{
 		AccountNumber:      a.AccountNumber,
 		Balance:            a.Balance,
 		AccountDescription: a.AccountDescription,
