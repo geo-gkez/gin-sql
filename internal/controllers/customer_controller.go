@@ -54,13 +54,13 @@ func (c *customerController) GetCustomerByEmail(ctx *gin.Context) {
 
 // CreateCustomer handles the HTTP request to create a new customer
 func (c *customerController) CreateCustomer(ctx *gin.Context) {
-	var customer models.Customer
+	var customer models.CustomerDTO
 	if err := ctx.ShouldBindJSON(&customer); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
 		return
 	}
 
-	createdCustomer, err := c.customerService.CreateCustomer(customer.ToCustomerDTO())
+	createdCustomer, err := c.customerService.CreateCustomer(customer)
 	if err != nil {
 		ctx.Error(fmt.Errorf("creating customer: %w", err))
 		return
