@@ -9,7 +9,7 @@ import (
 
 type ICustomerService interface {
 	FindAll() ([]models.CustomerDTO, error)
-	FindCustomerWithAccounts(email string) (models.CustomerAggregateDTO, error)
+	FindCustomerWithAccounts(email string) (models.CustomerDTO, error)
 	CreateCustomer(customer models.CustomerDTO) (models.CustomerDTO, error)
 }
 
@@ -48,16 +48,16 @@ func (s *customerService) FindAll() ([]models.CustomerDTO, error) {
 	return customerResponses, nil
 }
 
-// FindCustomerWithAccounts GetCustomerWithAccounts retrieves a customer with all their accounts
-func (s *customerService) FindCustomerWithAccounts(email string) (models.CustomerAggregateDTO, error) {
+// FindCustomerWithAccounts retrieves a CustomerDTO containing customer details and associated account information
+func (s *customerService) FindCustomerWithAccounts(email string) (models.CustomerDTO, error) {
 	customer, err := s.customerRepository.FindByEmail(email)
 	if err != nil {
-		return models.CustomerAggregateDTO{}, errors.NotFoundError(fmt.Sprintf("Customer with email %s not found: %v", email, err))
+		return models.CustomerDTO{}, errors.NotFoundError(fmt.Sprintf("Customer with email %s not found: %v", email, err))
 	}
 
 	accounts, err := s.accountRepository.FindByCustomerID(customer.ID)
 	if err != nil {
-		return models.CustomerAggregateDTO{}, errors.InternalServerError(fmt.Sprintf("Failed to retrieve accounts for customer with email %s: %v", email, err))
+		return models.CustomerDTO{}, errors.InternalServerError(fmt.Sprintf("Failed to retrieve accounts for customer with email %s: %v", email, err))
 	}
 
 	var accountResponses []models.AccountDTO
@@ -65,18 +65,28 @@ func (s *customerService) FindCustomerWithAccounts(email string) (models.Custome
 		accountResponses = append(accountResponses, account.ToAccountDTO())
 	}
 
-	return customer.ToCustomerAggregateDTO(accountResponses), nil
+	return customer.ToCustomerDTO(accountResponses), nil
 }
 
-// CreateCustomer creates a new customer and their accounts
-func (s *customerService) CreateCustomer(customer models.CustomerDTO) (models.CustomerDTO, error) {
-	createdCustomer, err := s.customerRepository.Create(customer.ToCustomer())
+// CreateCustomer creates a new customer and their accounts inline within this method
+func (s *customerService) CreateCustomer(customerDto models.CustomerDTO) (models.CustomerDTO, error) {
+	createdCustomer, err := s.customerRepository.Create(customerDto.ToCustomer())
 	if err != nil {
 		return models.CustomerDTO{}, errors.InternalServerError(fmt.Sprintf("Failed to create customer: %v", err))
 	}
 
-	// Assuming accounts are created in a separate process
-	// You can add logic here to create accounts if needed
+	var createdAccountDtos []models.AccountDTO
+	if len(customerDto.Accounts) > 0 {
+		for _, accountDto := range customerDto.Accounts {
+			account := accountDto.ToAccount()
+			account.CustomerID = createdCustomer.ID
+			createdAccount, err := s.accountRepository.CreateAccount(createdCustomer.ID, account)
+			if err != nil {
+				return models.CustomerDTO{}, errors.InternalServerError(fmt.Sprintf("Failed to create account for customer: %v", err))
+			}
+			createdAccountDtos = append(createdAccountDtos, createdAccount.ToAccountDTO())
+		}
+	}
 
-	return createdCustomer.ToCustomerDTO(), nil
+	return createdCustomer.ToCustomerDTO(createdAccountDtos), nil
 }

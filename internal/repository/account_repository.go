@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"log"
 	"org/gg/banking/internal/models"
+	"time"
 )
 
 type IAccountRepository interface {
 	FindByCustomerID(customerID int64) ([]models.Account, error)
+	CreateAccount(customerID int64, account models.Account) (models.Account, error)
 }
 
 type accountRepository struct {
@@ -36,9 +38,8 @@ func (repository *accountRepository) FindByCustomerID(customerID int64) ([]model
 		return nil, fmt.Errorf("error querying customer accounts: %v", err)
 	}
 	defer func(rows *sql.Rows) {
-		err := rows.Close()
-		if err != nil {
-			log.Fatal(err)
+		if err := rows.Close(); err != nil {
+			log.Printf("error closing rows: %v", err)
 		}
 	}(rows)
 
@@ -65,4 +66,37 @@ func (repository *accountRepository) FindByCustomerID(customerID int64) ([]model
 	}
 
 	return accounts, nil
+}
+
+func (repository *accountRepository) CreateAccount(customerID int64, account models.Account) (models.Account, error) {
+	query := `
+		INSERT INTO accounts (customer_id, account_number, balance, account_description, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING id,account_number, balance, account_description, created_at, updated_at
+	`
+
+	stmt, err := repository.db.Prepare(query)
+	if err != nil {
+		return models.Account{}, fmt.Errorf("error preparing statement: %v", err)
+	}
+	defer func(stmt *sql.Stmt) {
+		if err := stmt.Close(); err != nil {
+			log.Printf("error closing statement: %v", err)
+		}
+	}(stmt)
+
+	var createdAccount models.Account
+	err2 := stmt.QueryRow(customerID, account.AccountNumber, account.Balance, account.AccountDescription, time.Now(), time.Now()).Scan(
+		&createdAccount.ID,
+		&createdAccount.AccountNumber,
+		&createdAccount.Balance,
+		&createdAccount.AccountDescription,
+		&createdAccount.CreatedAt,
+		&createdAccount.UpdatedAt)
+
+	if err2 != nil {
+		return models.Account{}, fmt.Errorf("error executing statement: %v", err2)
+	}
+
+	return createdAccount, nil
 }
