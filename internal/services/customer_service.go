@@ -65,7 +65,7 @@ func (s *customerService) FindCustomerWithAccounts(email string) (models.Custome
 		accountResponses = append(accountResponses, account.ToAccountDTO())
 	}
 
-	return customer.ToCustomerDTO(accountResponses), nil
+	return customer.ToCustomerDTO(accountResponses...), nil
 }
 
 // CreateCustomer creates a new customer and their accounts inline within this method
@@ -88,5 +88,5 @@ func (s *customerService) CreateCustomer(customerDto models.CustomerDTO) (models
 		}
 	}
 
-	return createdCustomer.ToCustomerDTO(createdAccountDtos), nil
+	return createdCustomer.ToCustomerDTO(createdAccountDtos...), nil
 }

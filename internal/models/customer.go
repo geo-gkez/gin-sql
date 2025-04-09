@@ -19,11 +19,8 @@ type CustomerDTO struct {
 }
 
 // ToCustomerDTO converts the Customer model to CustomerDTO.
-// The variadic 'accounts' parameter allows passing an optional slice of AccountDTO.
-// If one or more slices are provided, the first slice is used to populate the Accounts field in the DTO.
-// This is useful for including related account information when converting a Customer to CustomerDTO.
-func (c Customer) ToCustomerDTO(accounts ...[]AccountDTO) CustomerDTO {
-	dto := CustomerDTO{
+func (c Customer) ToCustomerDTO(accounts ...AccountDTO) CustomerDTO {
+	customerDto := CustomerDTO{
 		FirstName: c.FirstName,
 		LastName:  c.LastName,
 		Email:     c.Email,
@@ -32,10 +29,10 @@ func (c Customer) ToCustomerDTO(accounts ...[]AccountDTO) CustomerDTO {
 
 	// Add accounts if provided
 	if len(accounts) > 0 {
-		dto.Accounts = accounts[0]
+		customerDto.Accounts = accounts
 	}
 
-	return dto
+	return customerDto
 }
 
 // ToCustomer converts the CustomerDTO DTO to Customer model
