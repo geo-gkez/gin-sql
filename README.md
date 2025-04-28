@@ -5,26 +5,43 @@ A simple banking API built with Go and the Gin framework.
 #### Project Structure
 
 ```
-├── cmd/
-│   └── banking/                # Main application entry point
-│       └── main.go
-├── internal/                   # Private application code
-│   ├── config/                 # Configuration logic
-│   ├── controllers/            # HTTP handlers
-│   ├── middleware/             # HTTP middleware
-│   ├── models/                 # Data models
-│   ├── repository/             # Data access layer
-│   ├── services/               # Business logic
-│   └── routes/                 # API route definitions
-├── pkg/                        # Public reusable libraries
-├── configs/                    # Configuration files
-│   └── config.yml              # YAML configuration
-├── api/                        # API definitions
-│   └── http_requests/          # HTTP request examples
-├── deployments/                # Deployment configurations
-│   └── docker-compose.yml
-└── scripts/                    # Utility scripts
-    └── sql-scripts/            # SQL initialization scripts
+.                       # Root of the project
+├── cmd               # Application entrypoint(s)
+│   └── banking
+│       └── main.go   # Main package with server initialization
+  ├── configs           # Configuration files
+│   └── config.yml    # Viper configuration
+├── api               # HTTP request definitions for REST client
+  │   └── customer.http # Sample API tests/requests
+├── deployments       # Infrastructure setup scripts
+│   └── docker-compose.yml # Docker Compose for database/service
+├── internal          # Application code (non-exported)
+│   ├── config        # App configuration logic
+│   │   └── app_config.go
+│   ├── controllers   # HTTP handler layer (Gin controllers)
+│   │   └── customer_controller.go
+│   ├── middleware    # Middleware for cross-cutting concerns
+│   │   └── errors    # Error handling middleware
+      │   │       ├── custom_errors.go
+│   │       ├── error_handler.go
+│   │       └── error_response.go
+│   ├── models        # Domain models and DTOs
+│   │   ├── account.go
+│   │   └── customer.go
+│   ├── repository    # Data access layer
+│   │   ├── account_repository.go
+│   │   └── customer_repository.go
+│   ├── routes        # Gin router setup
+    │   │   └── router.go
+│   └── services      # Business logic layer
+│       └── customer_service.go
+├── scripts           # Utility scripts
+│   └── sql-scripts   # SQL migrations and seed data
+    │       ├── create-tables.sql
+│       └── dummy-data.sql
+├── go.mod            # Go module definition
+├── go.sum            # Go module checksums
+└── README.md         # Project documentation
 ```
 
 #### Architecture
@@ -38,11 +55,12 @@ The application follows a layered architecture:
 
 #### API Endpoints
 
-| Method | Endpoint                   | Description                        |
-|--------|----------------------------|------------------------------------|
-| GET    | /api/v1/customers          | Retrieve all customers             |
-| GET    | /api/v1/customers/:email   | Retrieve customer by email with accounts |
-| POST   | /api/v1/customers          | Create a new customer              |
+| Method | Endpoint                   | Description                               |
+|--------|----------------------------|-------------------------------------------|
+| GET    | /api/v1/customers          | Retrieve all customers                    |
+| GET    | /api/v1/customers/:email   | Retrieve customer by email with accounts  |
+| POST   | /api/v1/customers          | Create a new customer                     |
+| DELETE | /api/v1/customers/:email   | Delete customer by email                  |
 
 #### Configuration with Viper
 
@@ -65,84 +83,29 @@ server:
   mode: "debug"
 ```
 
-Example usage in the application:
 
-```go
-import (
-"fmt"
-"github.com/gin-gonic/gin"
-"github.com/spf13/viper"
-"org/gg/banking/internal/controllers"
-"org/gg/banking/internal/repository"
-"org/gg/banking/internal/routes"
-"org/gg/banking/internal/services"
-"os"
-)
+#### Example HTTP Requests
 
-func SetupApp() (*gin.Engine, ServerConfiguration) {
-config, err := LoadConfig()
-if err != nil {
-panic(fmt.Sprintf("failed to load config: %v", err))
-}
-// Create components
-repo := repository.NewCustomerRepository()
-service := services.NewCustomerService(repo)
-controller := controllers.NewCustomerController(service)
+```http
+# Get all customers
+GET http://localhost:8080/api/v1/customers
 
-// Setup router and routes
-router := routes.SetupRouter()
-routes.RegisterRoutes(router, controller)
+# Get customer by email
+GET http://localhost:8080/api/v1/customers/jane.doe@example.com
 
-return router, config.Server
+# Create a new customer
+POST http://localhost:8080/api/v1/customers
+Content-Type: application/json
+
+{
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "email": "jane.doe@example.com",
+  "phone": "555-1234"
 }
 
-type AppConfiguration struct {
-Database DatabaseConfiguration
-Server   ServerConfiguration
-}
-
-type DatabaseConfiguration struct {
-Host     string
-Port     int
-User     string
-Password string
-DBName   string
-}
-
-type ServerConfiguration struct {
-Port int
-Mode string
-}
-
-func LoadConfig() (*AppConfiguration, error) {
-var env = os.Getenv("ENV")
-
-viper.SetConfigName(env)
-viper.SetConfigName("config")
-viper.SetConfigType("yml")
-
-// Get the project root directory
-projectRoot, err := os.Getwd()
-if err != nil {
-return nil, fmt.Errorf("failed to get working directory: %w", err)
-}
-
-// Try multiple possible config locations
-viper.AddConfigPath(fmt.Sprintf("%s/configs", projectRoot)) // From project root
-viper.AddConfigPath("configs")       // Direct subfolder
-viper.AddConfigPath("../../configs") // Two levels up
-
-if err := viper.ReadInConfig(); err != nil {
-return nil, fmt.Errorf("failed to read config file: %w", err)
-}
-
-var config AppConfiguration
-if err := viper.Unmarshal(&config); err != nil {
-return nil, fmt.Errorf("failed to unmarshal config: %w", err)
-}
-
-return &config, nil
-}
+# Delete customer by email
+DELETE http://localhost:8080/api/v1/customers/jane.doe@example.com
 ```
 
 #### Running the Application
