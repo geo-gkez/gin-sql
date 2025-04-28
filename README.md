@@ -4,44 +4,33 @@ A simple banking API built with Go and the Gin framework.
 
 #### Project Structure
 
-```
-.                       # Root of the project
-├── cmd               # Application entrypoint(s)
-│   └── banking
-│       └── main.go   # Main package with server initialization
-  ├── configs           # Configuration files
-│   └── config.yml    # Viper configuration
-├── api               # HTTP request definitions for REST client
-  │   └── customer.http # Sample API tests/requests
-├── deployments       # Infrastructure setup scripts
-│   └── docker-compose.yml # Docker Compose for database/service
-├── internal          # Application code (non-exported)
-│   ├── config        # App configuration logic
-│   │   └── app_config.go
-│   ├── controllers   # HTTP handler layer (Gin controllers)
-│   │   └── customer_controller.go
-│   ├── middleware    # Middleware for cross-cutting concerns
-│   │   └── errors    # Error handling middleware
-      │   │       ├── custom_errors.go
-│   │       ├── error_handler.go
-│   │       └── error_response.go
-│   ├── models        # Domain models and DTOs
-│   │   ├── account.go
-│   │   └── customer.go
-│   ├── repository    # Data access layer
-│   │   ├── account_repository.go
-│   │   └── customer_repository.go
-│   ├── routes        # Gin router setup
-    │   │   └── router.go
-│   └── services      # Business logic layer
-│       └── customer_service.go
-├── scripts           # Utility scripts
-│   └── sql-scripts   # SQL migrations and seed data
-    │       ├── create-tables.sql
-│       └── dummy-data.sql
-├── go.mod            # Go module definition
-├── go.sum            # Go module checksums
-└── README.md         # Project documentation
+```text
+/
+├── cmd/banking/main.go               # Main package & server initialization
+├── configs/config.yml                # Application configuration (Viper)
+├── api/customer.http                  # HTTP requests for REST Client
+├── deployments/docker-compose.yml    # Docker Compose for services
+├── internal/
+│   ├── config/app_config.go           # Configuration loader
+│   ├── controllers/customer_controller.go  # Gin HTTP handlers
+│   ├── middleware/errors/
+│   │   ├── custom_errors.go           # Custom error definitions
+│   │   ├── error_handler.go           # Middleware error handler
+│   │   └── error_response.go          # Error response DTO
+│   ├── models/
+│   │   ├── account.go                 # Account domain model & DTO
+│   │   └── customer.go                # Customer domain model & DTO
+│   ├── repository/
+│   │   ├── account_repository.go      # Data access for accounts
+│   │   └── customer_repository.go     # Data access for customers
+│   ├── routes/router.go               # Gin router setup
+│   └── services/customer_service.go   # Business logic layer
+├── scripts/sql-scripts/
+│   ├── create-tables.sql              # SQL migrations
+│   └── dummy-data.sql                 # Seed data
+├── go.mod                             # Go module definition
+├── go.sum                             # Go module checksums
+└── README.md                          # Project documentation
 ```
 
 #### Architecture
