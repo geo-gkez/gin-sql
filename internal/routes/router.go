@@ -26,6 +26,7 @@ func RegisterRoutes(router *gin.Engine, customerController controllers.ICustomer
 		customerGroup.GET("/", customerController.GetCustomers)
 		customerGroup.GET("/:email", customerController.GetCustomerByEmail)
 		customerGroup.POST("/", customerController.CreateCustomer)
+		customerGroup.DELETE("/:email", customerController.DeleteCustomerByEmail)
 	}
 
 }

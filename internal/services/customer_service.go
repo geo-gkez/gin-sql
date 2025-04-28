@@ -11,6 +11,7 @@ type ICustomerService interface {
 	FindAll() ([]models.CustomerDTO, error)
 	FindCustomerWithAccounts(email string) (models.CustomerDTO, error)
 	CreateCustomer(customer models.CustomerDTO) (models.CustomerDTO, error)
+	DeleteCustomerByEmail(email string) error // New method
 }
 
 type customerService struct {
@@ -89,4 +90,26 @@ func (s *customerService) CreateCustomer(customerDto models.CustomerDTO) (models
 	}
 
 	return createdCustomer.ToCustomerDTO(createdAccountDtos...), nil
+}
+
+// Implement the delete method
+func (s *customerService) DeleteCustomerByEmail(email string) error {
+	customer, err := s.customerRepository.FindByEmail(email)
+	if err != nil {
+		return errors.NotFoundError(fmt.Sprintf("Customer with email %s not found: %v", email, err))
+	}
+
+	// Delete customer's accounts first (to maintain referential integrity)
+	err = s.accountRepository.DeleteByCustomerID(customer.ID)
+	if err != nil {
+		return errors.InternalServerError(fmt.Sprintf("Failed to delete accounts for customer with email %s: %v", email, err))
+	}
+
+	// Then delete the customer
+	err = s.customerRepository.DeleteByEmail(email)
+	if err != nil {
+		return errors.InternalServerError(fmt.Sprintf("Failed to delete customer with email %s: %v", email, err))
+	}
+
+	return nil
 }

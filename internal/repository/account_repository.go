@@ -11,6 +11,7 @@ import (
 type IAccountRepository interface {
 	FindByCustomerID(customerID int64) ([]models.Account, error)
 	CreateAccount(customerID int64, account models.Account) (models.Account, error)
+	DeleteByCustomerID(customerID int64) error // Add this method
 }
 
 type accountRepository struct {
@@ -99,4 +100,10 @@ func (repository *accountRepository) CreateAccount(customerID int64, account mod
 	}
 
 	return createdAccount, nil
+}
+
+func (r *accountRepository) DeleteByCustomerID(customerID int64) error {
+	// Execute SQL to delete all accounts for a customer
+	_, err := r.db.Exec("DELETE FROM accounts WHERE customer_id = $1", customerID)
+	return err
 }

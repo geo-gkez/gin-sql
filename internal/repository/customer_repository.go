@@ -12,6 +12,7 @@ type ICustomerRepository interface {
 	FindAll() ([]models.Customer, error)
 	FindByEmail(email string) (models.Customer, error)
 	Create(customer models.Customer) (models.Customer, error)
+	DeleteByEmail(email string) error // New method
 }
 
 type customerRepository struct {
@@ -99,4 +100,10 @@ func (repo *customerRepository) Create(customer models.Customer) (models.Custome
 	}
 
 	return createdCustomer, nil
+}
+
+// DeleteByEmail deletes a customer by email
+func (repo *customerRepository) DeleteByEmail(email string) error {
+	_, err := repo.db.Exec("DELETE FROM customers WHERE email = $1", email)
+	return err
 }

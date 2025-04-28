@@ -15,11 +15,31 @@ POST http://localhost:8080/api/v1/customers
 Content-Type: application/json
 
 {
-  "first_name": "Sonia",
-  "last_name": "Gkezeri",
-  "email": "sg@gmail.com",
-  "phone": "69999987"
+  "first_name": "bb",
+  "last_name": "Tsabanakis",
+  "email": "bb@gmail.com",
+  "phone": "0906666",
+  "accounts": [
+    {
+      "account_number": "GR123456789012345678901234567",
+      "balance": 1001.0,
+      "account_description": "Main account",
+      "currency": "EUR"
+    },
+      {
+      "account_number": "GR1234567890123456789012345678",
+      "balance": 500.0,
+      "account_description": "Second account",
+      "currency": "EUR"
+    }
+  ]
 }
+
+### Get customer by email - bb@gmail.com
+GET http://localhost:8080/api/v1/customers/bb@gmail.com
+
+### Delete customer by email - bb@gmail.com
+DELETE http://localhost:8080/api/v1/customers/bb@gmail.com
 
 ### Get customer by email - so(not exitsting)
 GET http://localhost:8080/api/v1/customers/so@gmail.com

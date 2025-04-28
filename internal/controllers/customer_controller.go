@@ -2,10 +2,11 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"org/gg/banking/internal/models"
 	"org/gg/banking/internal/services"
+
+	"github.com/gin-gonic/gin"
 )
 
 // ICustomerController defines the interface for customer-related HTTP handlers
@@ -13,6 +14,7 @@ type ICustomerController interface {
 	GetCustomers(ctx *gin.Context)
 	GetCustomerByEmail(ctx *gin.Context)
 	CreateCustomer(ctx *gin.Context)
+	DeleteCustomerByEmail(ctx *gin.Context) // New method
 }
 
 type customerController struct {
@@ -67,4 +69,21 @@ func (c *customerController) CreateCustomer(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusCreated, createdCustomer)
+}
+
+// Implement the delete method
+func (c *customerController) DeleteCustomerByEmail(ctx *gin.Context) {
+	email := ctx.Param("email")
+	if email == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Email parameter is required"})
+		return
+	}
+
+	err := c.customerService.DeleteCustomerByEmail(email)
+	if err != nil {
+		ctx.Error(fmt.Errorf("deleting customer by email: %w", err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "Customer successfully deleted"})
 }
