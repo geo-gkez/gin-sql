@@ -1,14 +1,18 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
 	"org/gg/banking/internal/controllers"
 	"org/gg/banking/internal/middleware/errors"
+	"org/gg/banking/internal/middleware/logger"
+
+	"github.com/gin-gonic/gin"
 )
 
 // SetupRouter initializes the Gin router and applies middleware
 func SetupRouter() *gin.Engine {
 	router := gin.Default()
+
+	router.Use(logger.HTTPLoggerMiddleware())
 	// Register error middleware
 	router.Use(errors.ErrorHandlerMiddleware())
 
