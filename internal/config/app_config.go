@@ -3,18 +3,27 @@ package config
 import (
 	"database/sql"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	_ "github.com/lib/pq"
-	"github.com/spf13/viper"
 	"log"
+	"log/slog"
+	"org/gg/banking/internal/config/logger"
 	"org/gg/banking/internal/controllers"
 	"org/gg/banking/internal/repository"
 	"org/gg/banking/internal/routes"
 	"org/gg/banking/internal/services"
 	"os"
+
+	"github.com/gin-gonic/gin"
+	_ "github.com/lib/pq"
+	"github.com/spf13/viper"
 )
 
 func SetupApp() {
+	// initialize logger
+	logger.InitLogger(logger.LoggerConfig{
+		Level:  slog.LevelDebug,
+		Format: "json",
+	})
+
 	config, err := LoadConfig()
 	if err != nil {
 		panic(fmt.Sprintf("failed to load config: %v", err))
