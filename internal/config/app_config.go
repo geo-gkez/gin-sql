@@ -22,7 +22,6 @@ func SetupApp() {
 		panic(fmt.Sprintf("failed to load config: %v", err))
 	}
 
-	// config.Server.Mode
 	// initialize logger
 	logger.InitLogger(logger.LoggerConfig{
 		Level: config.Server.Mode,
