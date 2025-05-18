@@ -8,3 +8,4 @@ database:
 server:
   port: 8080
   mode: debug
+  log_level: debug
