@@ -24,7 +24,7 @@ func SetupApp() {
 
 	// initialize logger
 	logger.InitLogger(logger.LoggerConfig{
-		Level: config.Server.Mode,
+		Level: config.Server.LoggLevel,
 	})
 
 	db := connectToPostgres(config)
@@ -93,8 +93,9 @@ type DatabaseConfiguration struct {
 }
 
 type ServerConfiguration struct {
-	Port int
-	Mode string
+	Port      int
+	Mode      string
+	LoggLevel string
 }
 
 func LoadConfig() (*AppConfiguration, error) {
