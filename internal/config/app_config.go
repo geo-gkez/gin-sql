@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"log/slog"
 	"org/gg/banking/internal/config/logger"
 	"org/gg/banking/internal/controllers"
 	"org/gg/banking/internal/repository"
@@ -18,16 +17,16 @@ import (
 )
 
 func SetupApp() {
-	// initialize logger
-	logger.InitLogger(logger.LoggerConfig{
-		Level:  slog.LevelDebug,
-		Format: "json",
-	})
-
 	config, err := LoadConfig()
 	if err != nil {
 		panic(fmt.Sprintf("failed to load config: %v", err))
 	}
+
+	// config.Server.Mode
+	// initialize logger
+	logger.InitLogger(logger.LoggerConfig{
+		Level: config.Server.Mode,
+	})
 
 	db := connectToPostgres(config)
 	// Ensure DB is closed when application terminates

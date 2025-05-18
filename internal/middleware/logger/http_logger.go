@@ -49,7 +49,9 @@ func logIncomingRequest(c *gin.Context) {
 	// Save the request body so it can be read multiple times
 	bodyValue := captureRequestBody(c)
 
-	logger.Logger.Info("INCOMING REQUEST",
+	logger.Logger.InfoContext(
+		c,
+		"INCOMING REQUEST",
 		slog.String("method", c.Request.Method),
 		slog.String("path", c.Request.URL.Path),
 		slog.String("query", c.Request.URL.RawQuery),
@@ -62,7 +64,13 @@ func logIncomingRequest(c *gin.Context) {
 func captureRequestBody(c *gin.Context) any {
 	var bodyBytes []byte
 	if c.Request.Body != nil {
-		bodyBytes, _ = io.ReadAll(c.Request.Body)
+		var err error
+		bodyBytes, err = io.ReadAll(c.Request.Body)
+
+		if err != nil {
+			logger.Logger.ErrorContext(c, "Error reading request body", slog.Any("error", err))
+			return nil
+		}
 		// Restore the request body for subsequent handlers
 		c.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 	}
@@ -128,7 +136,9 @@ func logOutgoingResponse(c *gin.Context, rbw *ResponseBodyWriter) {
 	}
 
 	// Log the response
-	logger.Logger.Info("OUTGOING RESPONSE",
+	logger.Logger.InfoContext(
+		c,
+		"OUTGOING RESPONSE",
 		slog.Int("status", statusCode),
 		slog.Int("size", responseSize),
 		slog.Any("headers", responseHeaders),
