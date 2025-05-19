@@ -35,8 +35,40 @@ A comprehensive banking API built with Go and the Gin framework, featuring struc
 │   └── dummy-data.sql                # Seed data
 ├── go.mod                            # Go module definition
 ├── go.sum                            # Go module checksums
+├── Makefile                          # Build automation
 └── README.md                         # Project documentation
 ```
+
+## Development Workflow
+
+### Using the Makefile
+
+The project includes a Makefile to simplify common development tasks:
+
+```bash
+# Format Go code
+make fmt
+
+# Vet and build the application
+make build
+
+# Run the application
+make run
+
+# Start infrastructure (PostgreSQL database)
+make infra
+
+# Shut down infrastructure
+make infra-down
+
+# Clean up build artifacts
+make clean
+
+# Show all available commands
+make help
+```
+
+For a complete list of available commands, run `make help`.
 
 ## Architecture
 
