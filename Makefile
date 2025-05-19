@@ -6,7 +6,7 @@ MAIN_PATH=./cmd/banking/main.go
 
 .DEFAULT_GOAL := build
 
-.PHONY: fmt vet build run
+.PHONY: fmt vet build run clean
 
 fmt:
 	go fmt ./...
