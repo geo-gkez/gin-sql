@@ -5,7 +5,7 @@ APP_NAME=banking-api
 MAIN_PATH=./cmd/banking/main.go
 DOCKER_COMPOSE_FILE=deployments/docker-compose.yml
 
-.DEFAULT_GOAL := build
+.DEFAULT_GOAL := help
 
 .PHONY: fmt vet build run clean infra infra-down help
 
